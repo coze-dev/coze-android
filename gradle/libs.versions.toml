@@ -1,0 +1,29 @@
+[versions]
+agp = "8.7.3"
+junit = "4.13.2"
+junitVersion = "1.2.1"
+espressoCore = "3.6.1"
+appcompat = "1.7.0"
+material = "1.12.0"
+volcenginertc = "3.58.1.19400"
+cozeApi = "0.2.1"
+lombok = "1.18.30"
+kotlin = "1.9.24"
+coreKtx = "1.13.0"
+
+[libraries]
+core = { module = "androidx.core:core", version.ref = "coreKtx" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+volcenginertc = { module = "com.volcengine:VolcEngineRTC", version.ref = "volcenginertc" }
+coze-api = { module = "com.coze:coze-api", version.ref = "cozeApi" }
+lombok = { group = "org.projectlombok", name = "lombok", version.ref = "lombok" }
+core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+
