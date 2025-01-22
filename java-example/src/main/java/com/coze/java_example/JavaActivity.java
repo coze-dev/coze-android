@@ -1,10 +1,12 @@
 package com.coze.java_example;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -47,7 +49,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class JavaActivity extends BaseActivity {
+public class JavaActivity extends AppCompatActivity {
     private static final String TAG = "JavaActivity";
     private static final ObjectMapper mapper = new ObjectMapper();
 
@@ -75,6 +77,8 @@ public class JavaActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+        requestPermission();
         try {
             // 确保之前的实例被清理
             RTCVideo.destroyRTCVideo();
@@ -566,5 +570,26 @@ public class JavaActivity extends BaseActivity {
             }
 
         });
+    }
+
+    public void requestPermission() {
+        String[] PERMISSIONS_STORAGE = {
+                Manifest.permission.RECORD_AUDIO,
+                Manifest.permission.CAMERA,
+                Manifest.permission.INTERNET
+
+        };
+        boolean needPermission = false;
+
+        for (String permission : PERMISSIONS_STORAGE) {
+            if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+                needPermission = true;
+                break;
+            }
+        }
+        if(needPermission){
+            requestPermissions(PERMISSIONS_STORAGE, 22);
+        }
+
     }
 }

@@ -2,6 +2,7 @@ package com.coze.kotlin_example
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
@@ -11,6 +12,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.coze.openapi.client.audio.rooms.CreateRoomReq
@@ -31,7 +33,7 @@ import com.ss.bytertc.engine.handler.IRTCVideoEventHandler
 import com.ss.bytertc.engine.type.*
 import java.nio.ByteBuffer
 
-class KotlinActivity : BaseActivity() {
+class KotlinActivity : AppCompatActivity() {
     companion object {
         private const val TAG = "KotlinActivity"
         private val mapper = ObjectMapper()
@@ -56,6 +58,8 @@ class KotlinActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        requestPermission()
         try {
             // 确保之前的实例被清理
             RTCVideo.destroyRTCVideo()
@@ -534,6 +538,22 @@ class KotlinActivity : BaseActivity() {
             Log.e(TAG, "创建引擎失败", e)
             ToastUtil.showAlert(this, "创建引擎失败: ${e.message}")
             rtcVideo = null
+        }
+    }
+
+    fun requestPermission() {
+        val permissions = arrayOf(
+            Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.CAMERA,
+            Manifest.permission.INTERNET
+        )
+
+        val needPermission = permissions.any { permission ->
+            ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED
+        }
+
+        if (needPermission) {
+            requestPermissions(permissions, 22)
         }
     }
 } 
