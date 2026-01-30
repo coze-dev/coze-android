@@ -73,6 +73,8 @@ public class JavaActivity extends AppCompatActivity {
     private boolean isAudioEnabled = true;
 
     private boolean isConnected = false;
+    
+    private String botUid = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,6 +163,7 @@ public class JavaActivity extends AppCompatActivity {
             RTCVideo.destroyRTCVideo();
             rtcVideo = null;
         }
+        botUid = null;
         ToastUtil.showAlert(this, "断开连接成功");
     }
 
@@ -261,6 +264,10 @@ public class JavaActivity extends AppCompatActivity {
         @Override
         public void onUserPublishStream(String uid, MediaStreamType type) {
             super.onUserPublishStream(uid, type);
+            if (botUid == null) {
+                botUid = uid;
+                Log.d(TAG, "Bot 加入房间 - Bot UID: " + uid + ", 本地 UID: " + roomInfo.getUid());
+            }
             runOnUiThread(() -> {
                 // 设置远端视频渲染视图
                 setRemoteRenderView(uid);
@@ -558,15 +565,21 @@ public class JavaActivity extends AppCompatActivity {
                 ToastUtil.showAlert(this,"请先连接");
                 return;
             }
+            if(botUid == null){
+                ToastUtil.showAlert(this,"Bot 未连接，请等待 Bot 加入房间");
+                return;
+            }
             try {
                 Map<String, String> data = new HashMap<>();
                 data.put("id", "event_1");
                 data.put("event_type", "conversation.chat.cancel");
                 data.put("data", "{}");
-                rtcRoom.sendUserMessage(roomInfo.getUid(), mapper.writeValueAsString(data), MessageConfig.RELIABLE_ORDERED);
+                rtcRoom.sendUserMessage(botUid, mapper.writeValueAsString(data), MessageConfig.RELIABLE_ORDERED);
+                Log.d(TAG, "发送打断消息给 Bot - Bot UID: " + botUid);
                 ToastUtil.showShortToast(this, "打断成功");
             }catch (Exception e){
-                ToastUtil.showShortToast(this, "打断失败");
+                Log.e(TAG, "发送打断消息失败", e);
+                ToastUtil.showShortToast(this, "打断失败: " + e.getMessage());
             }
 
         });
